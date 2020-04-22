@@ -3,4 +3,6 @@
     <string name="call_a_number">Call a number</string>
     <string name="call">Call</string>
     <string name="insert_a_number_using_the_keypad_below">Insert a number</string>
+    <string name="name">Name</string>
+    <string name="speed_dial_details">Speed Dial Details</string>
 </resources>
