@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">HelloActivity</string>
+    <string name="message_to_send">Message to Send</string>
+    <string name="send">Send</string>
+    <string name="https_github_com_pedrovt">https://github.com/pedrovt</string>
+    <string name="open_location">Open Location</string>
+    <string name="share">Share</string>
+    <string name="open_website">Open Website</string>
+    <string name="my_text_to_share">My text to share</string>
+    <string name="university_of_aveiro">University of Aveiro</string>
+    <string name="share_message">\"Share this text with: \"</string>
 </resources>
