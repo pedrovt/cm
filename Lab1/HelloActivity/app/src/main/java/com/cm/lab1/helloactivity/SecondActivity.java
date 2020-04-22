@@ -3,6 +3,7 @@ package com.cm.lab1.helloactivity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 
 public class SecondActivity extends AppCompatActivity {
@@ -17,5 +18,12 @@ public class SecondActivity extends AppCompatActivity {
 
         EditText text = findViewById(R.id.messageText);
         text.setText(message);
+    }
+
+    public void returnButton(View view) {
+        /* Return to main activity */
+        Intent replyIntent = new Intent();
+        setResult(RESULT_OK, replyIntent);
+        finish();
     }
 }
