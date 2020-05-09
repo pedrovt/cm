@@ -9,9 +9,12 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cm.hw.weather.R;
 import com.cm.hw.weather.datamodel.*;
@@ -119,10 +122,11 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.cities = citiesCollection;
                 citiesList.clear();
                 citiesList.addAll(citiesCollection.keySet());
+
                 Log.d(LOG_TAG, "\nWeather descriptions: " + weatherDescriptions + "\n");
                 Log.d(LOG_TAG, "\nList of cities: " + cities + "\n");
                 // update recycler view
-                adapter.notifyDataSetChanged();
+                adapter.notifyItemRangeChanged(0, citiesCollection.size() - 1 );
 
             }
 
@@ -131,6 +135,28 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(LOG_TAG, "Failed to get cities list!");
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_info) {
+            Toast.makeText(MainActivity.this, "Select a city and slide left or right to see the forecast for the next 5 days", Toast.LENGTH_LONG).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**
