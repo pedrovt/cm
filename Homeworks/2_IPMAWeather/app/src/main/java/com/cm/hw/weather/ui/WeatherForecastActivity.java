@@ -18,24 +18,28 @@ package com.cm.hw.weather.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.core.app.NavUtils;
+import android.view.MenuItem;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import android.view.MenuItem;
+import androidx.core.app.NavUtils;
 
 import com.cm.hw.weather.R;
-import com.cm.hw.weather.ui.content.SongUtils;
+import com.cm.hw.weather.datamodel.Weather;
+import com.google.gson.Gson;
 
-/**
- * An activity that shows a fragment with song detail.
- */
-public class SongDetailActivity extends AppCompatActivity {
+import java.util.Arrays;
+import java.util.List;
+
+public class WeatherForecastActivity extends AppCompatActivity {
+
+    public static final String FORECAST_KEY = "WeatherForecastActivity.forecastList";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_song_detail);
+        setContentView(R.layout.weather_forecast_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
@@ -46,15 +50,20 @@ public class SongDetailActivity extends AppCompatActivity {
         }
 
         if (savedInstanceState == null) {
-            // Get the selected song position from the intent extra.
-            int selectedSong =
-                    getIntent().getIntExtra(SongUtils.SONG_ID_KEY, 0);
+            // Get the forecast from the intent extra.
+            String forecastJsonList = getIntent().getStringExtra(FORECAST_KEY);
+
+            // Convert the forecast into a list of Weather
+            Gson gson = new Gson();
+            Weather[] forecastArray = gson.fromJson(forecastJsonList, Weather[].class);
+            List<Weather> forecast = Arrays.asList(forecastArray);
+
             // Create instance of the detail fragment and add it to the activity
             // using a fragment transaction.
-            SongDetailFragment fragment =
-                    SongDetailFragment.newInstance(selectedSong);
+            WeatherForecastFragment fragment =
+                    WeatherForecastFragment.newInstance(forecast);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.song_detail_container, fragment)
+                    .add(R.id.weather_forecast_container, fragment)
                     .commit();
         }
     }

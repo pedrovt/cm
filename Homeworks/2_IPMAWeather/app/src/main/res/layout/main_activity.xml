@@ -7,7 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.cm.hw.weather.ui.MainActivity">
+    tools:context="com.cm.hw.weather.ui.MainActivity"
+    android:background="@drawable/bg_gradient">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
@@ -29,7 +30,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <include layout="@layout/song_list" />
+        <include layout="@layout/cities_list" />
     </FrameLayout>
 
 

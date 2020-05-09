@@ -38,8 +38,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.cm.hw.weather.ui.SongDetailActivity"
-            android:label="@string/title_song_detail"
+            android:name="com.cm.hw.weather.ui.WeatherForecastActivity"
+            android:label="@string/weather_forecast_detail"
             android:parentActivityName="com.cm.hw.weather.ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

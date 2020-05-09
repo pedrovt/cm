@@ -1,43 +1,30 @@
-/*
- * Copyright (C) 2017 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.cm.hw.weather.ui;
 
-
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
 import com.cm.hw.weather.R;
-import com.cm.hw.weather.ui.content.SongUtils;
+import com.cm.hw.weather.datamodel.Weather;
+import com.cm.hw.weather.datamodel.WeatherType;
+import com.cm.hw.weather.datamodel.WindSpeed;
+import com.google.gson.Gson;
 
-/**
- * A simple {@link Fragment} subclass that displays the song
- * detail based on the song selected from a list.
- */
-public class SongDetailFragment extends Fragment {
+import java.util.List;
+import java.util.Map;
 
-    // Song includes the song title and detail.
-    public SongUtils.Song mSong;
+public class WeatherForecastFragment extends Fragment {
 
-    public SongDetailFragment() {
-        // Required empty public constructor
+    private static final String FORECAST_KEY = "WeatherForecastFragment.forecastList";
+
+    private Weather[] mForecast;
+
+    public WeatherForecastFragment() {
     }
 
     /**
@@ -48,15 +35,18 @@ public class SongDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments().containsKey(SongUtils.SONG_ID_KEY)) {
+        if (getArguments().containsKey(FORECAST_KEY)) {
             // Load the content specified by the fragment arguments.
-            mSong = SongUtils.SONG_ITEMS.get(getArguments()
-                    .getInt(SongUtils.SONG_ID_KEY));
+
+            // convert json to list
+            Gson gson = new Gson();
+            String forecastJsonList = getArguments().getString(FORECAST_KEY);
+            mForecast = gson.fromJson(forecastJsonList, Weather[].class);
         }
     }
 
     /**
-     * This method inflates the fragment's view and shows the song
+     * This method inflates the fragment's view and shows the forecast
      * detail information.
      *
      * @param inflater LayoutInflater object to inflate views
@@ -67,13 +57,41 @@ public class SongDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.song_detail,
+        View rootView = inflater.inflate(R.layout.weather_forecast_fragment,
                 container, false);
 
         // Show the detail information in a TextView.
-        if (mSong != null) {
-            ((TextView) rootView.findViewById(R.id.song_detail))
-                    .setText(mSong.details);
+        if (mForecast != null) {
+            for (int i = 0; i < mForecast.length; i++) {
+                Log.i("Forecast Info for day " + (i + 1), mForecast[i].toString());
+            }
+            // TODO other days
+            Weather forecast = mForecast[0];
+
+            // City Name
+            ((TextView) rootView.findViewById(R.id.city_name)).setText(forecast.getCityName());
+
+            // Forecast Date
+            ((TextView) rootView.findViewById(R.id.forecast_date)).setText(forecast.getForecastDate());
+
+            // Weather Type (icon + string)
+            // TODO icon
+            WeatherType weatherType = MainActivity.weatherDescriptions.get(forecast.getIdWeatherType());
+            ((TextView) rootView.findViewById(R.id.status)).setText(weatherType.getDescIdWeatherTypeEN());
+
+            // Minimum Temperature
+            ((TextView) rootView.findViewById(R.id.min_temp)).setText(String.format("%s ºC", forecast.getTMin()));
+
+            // Maximum Temperature
+            ((TextView) rootView.findViewById(R.id.max_temp)).setText(String.format("%s ºC", forecast.getTMax()));
+
+            // Wind (direction + speed)
+            String windSpeed = MainActivity.windDescriptions.get(forecast.getClassWindSpeed());
+            ((TextView) rootView.findViewById(R.id.wind)).setText(String.format("%s - %s", windSpeed, forecast.getPredWindDir()));
+
+            // Rain Probability
+            ((TextView) rootView.findViewById(R.id.rain_probability)).setText(String.format("%s %%", forecast.getPrecipitaProb()));
+
         }
 
         return rootView;
@@ -83,14 +101,19 @@ public class SongDetailFragment extends Fragment {
      * This method sets up a bundle for the arguments to pass
      * to a new instance of this fragment.
      *
-     * @param selectedSong Integer position of selected song in song list
+     * @param forecast Forecast for the next n days
      * @return fragment
      */
-    public static SongDetailFragment newInstance (int selectedSong) {
-        SongDetailFragment fragment = new SongDetailFragment();
+    public static WeatherForecastFragment newInstance (List<Weather> forecast) {
+        WeatherForecastFragment fragment = new WeatherForecastFragment();
         // Set the bundle arguments for the fragment.
         Bundle arguments = new Bundle();
-        arguments.putInt(SongUtils.SONG_ID_KEY, selectedSong);
+
+        // convert list to json
+        Gson gson = new Gson();
+        String forecastJsonList = gson.toJson(forecast);
+
+        arguments.putString(FORECAST_KEY, forecastJsonList);
         fragment.setArguments(arguments);
         return fragment;
     }

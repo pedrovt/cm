@@ -3,6 +3,8 @@ package com.cm.hw.weather.network;
 import com.cm.hw.weather.datamodel.CityGroup;
 import com.cm.hw.weather.datamodel.WeatherGroup;
 import com.cm.hw.weather.datamodel.WeatherTypeGroup;
+import com.cm.hw.weather.datamodel.WindSpeed;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -20,5 +22,8 @@ public interface IpmaApiEndpoints {
 
     @GET("open-data/weather-type-classe.json")
     Call<WeatherTypeGroup> getWeatherTypes();
+
+    @GET("open-data/wind-speed-daily-classe.json")
+    Call<WindSpeed> getWindSpeed();
 
 }

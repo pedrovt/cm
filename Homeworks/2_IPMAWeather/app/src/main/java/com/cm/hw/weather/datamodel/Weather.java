@@ -7,6 +7,8 @@ import java.util.Date;
 
 public class Weather {
 
+    private String cityName;
+
     @Expose
     private int globalIdLocal;
 
@@ -120,10 +122,15 @@ public class Weather {
 
     public Date getLastRefresh() { return lastRefresh; }
 
+    public void setCityName(String cityName) { this.cityName = cityName; }
+
+    public String getCityName() { return cityName; }
+
     @Override
     public String toString() {
         return "Weather{" +
-                "globalIdLocal=" + globalIdLocal +
+                "cityName=" + cityName + '\'' +
+                ", globalIdLocal=" + globalIdLocal +
                 ", forecastDate='" + forecastDate + '\'' +
                 ", precipitaProb=" + precipitaProb +
                 ", tMin=" + tMin +
@@ -134,4 +141,6 @@ public class Weather {
                 ", lastRefresh=" + lastRefresh +
                 '}';
     }
+
+
 }
