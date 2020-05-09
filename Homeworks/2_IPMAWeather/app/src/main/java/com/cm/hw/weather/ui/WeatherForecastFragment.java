@@ -133,7 +133,8 @@ public class WeatherForecastFragment extends Fragment {
             // Weather Type (icon + string)
             WeatherType weatherType = MainActivity.weatherDescriptions.get(forecast.getIdWeatherType());
             holder.mStatus.setText(weatherType.getDescIdWeatherTypeEN());
-            holder.mStatusIcon.setImageResource(R.drawable.weather_state_cloudy);       // TODO
+            int icon = WeatherTypeIcons.getIcon(weatherType.getIdWeatherType());
+            holder.mStatusIcon.setImageResource(icon);
 
             // Minimum Temperature
             holder.mMinTemp.setText(String.format("%s ºC", forecast.getTMin()));
