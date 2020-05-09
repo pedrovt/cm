@@ -41,15 +41,20 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        feedback = findViewById(R.id.tvFeedback);
+
+        getWeatherDescriptions();
+        getListOfCities();
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                callWeatherForecastForACityStep1("Aveiro");
+                getForecastFromCity("Aveiro");
             }
         });
 
-        feedback = findViewById(R.id.tvFeedback);
+
     }
 
 
@@ -76,16 +81,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void callWeatherForecastForACityStep1(String city) {
+    private void getWeatherDescriptions() {
 
-        feedback.append("\nGetting forecast for: " + city); feedback.append("\n");
+        feedback.append("\nGetting weather descriptions\n");
 
         // call the remote api, passing an (anonymous) listener to get back the results
         client.retrieveWeatherConditionsDescriptions(new WeatherTypesResultsObserver() {
             @Override
             public void receiveWeatherTypesList(HashMap<Integer, WeatherType> descriptorsCollection) {
                 MainActivity.this.weatherDescriptions = descriptorsCollection;
-                callWeatherForecastForACityStep2( city);
+                Log.d("callWeatherStep1", MainActivity.this.weatherDescriptions.toString());
+                getListOfCities();
             }
             @Override
             public void onFailure(Throwable cause) {
@@ -93,21 +99,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
     }
 
-    private void callWeatherForecastForACityStep2(String city) {
+    private void getListOfCities() {
+
+        feedback.append("\nGetting list of cities"); feedback.append("\n");
+        
         client.retrieveCitiesList(new CityResultsObserver() {
 
             @Override
             public void receiveCitiesList(HashMap<String, City> citiesCollection) {
                 MainActivity.this.cities = citiesCollection;
-                City cityFound = cities.get(city);
-                if( null != cityFound) {
-                    int locationId = cityFound.getGlobalIdLocal();
-                    callWeatherForecastForACityStep3(locationId);
-                } else {
-                    feedback.append("unknown city: " + city);
-                }
+                feedback.append("\nWeather descriptions: " + weatherDescriptions + "\n");
+                feedback.append("\nList of cities: " + cities + "\n");
+                // TODO update recycler view
             }
 
             @Override
@@ -117,21 +123,27 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void callWeatherForecastForACityStep3(int localId) {
-        client.retrieveForecastForCity(localId, new ForecastForACityResultsObserver() {
-            @Override
-            public void receiveForecastList(List<Weather> forecast) {
-                for (Weather day : forecast) {
-                    feedback.append(day.toString());
-                    feedback.append("\t");
+    private void getForecastFromCity(String city) {
+        City cityFound = cities.get(city);
+        if( null != cityFound) {
+            int localId = cityFound.getGlobalIdLocal();
+            client.retrieveForecastForCity(localId, new ForecastForACityResultsObserver() {
+                @Override
+                public void receiveForecastList(List<Weather> forecast) {
+                    for (Weather day : forecast) {
+                        feedback.append(day.toString());
+                        feedback.append("\t");
+                    }
+                    // TODO update fragment
                 }
-            }
-            @Override
-            public void onFailure(Throwable cause) {
-                feedback.append( "Failed to get forecast for 5 days");
-            }
-        });
-
+                @Override
+                public void onFailure(Throwable cause) {
+                    feedback.append( "Failed to get forecast for 5 days");
+                }
+            });
+        } else {
+            feedback.append("unknown city: " + city);
+        }
     }
 
 }

@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitInstance {
 
     private static Retrofit retrofit;
-    private static final String BASE_URL = "http://api.ipma.pt/";
+    private static final String BASE_URL = "https://api.ipma.pt/";
 
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
